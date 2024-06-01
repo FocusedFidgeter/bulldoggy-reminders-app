@@ -53,7 +53,7 @@ async def post_login(cookie: Optional[AuthCookie] = Depends(get_login_form_creds
     response.set_cookie(key=cookie.name, value=cookie.token)
   else:
     response = RedirectResponse('/login?invalid=True', status_code=302)
-  
+
   return response
 
 
@@ -67,7 +67,7 @@ logout = dict(
 async def post_login(cookie: Optional[AuthCookie] = Depends(get_auth_cookie)) -> dict:
   if not cookie:
     raise UnauthorizedPageException()
-  
+
   response = RedirectResponse('/login?logged_out=True', status_code=302)
   response.set_cookie(key=cookie.name, value=cookie.token, expires=-1)
   return response
