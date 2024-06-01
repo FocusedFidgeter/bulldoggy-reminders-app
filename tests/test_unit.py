@@ -1,3 +1,9 @@
+import sys
+import os
+
+# Append the project root directory to sys.path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 """
 This module contains unit tests for the Bulldoggy app.
 """

@@ -25,7 +25,31 @@ from testlib.inputs import User
 # --------------------------------------------------------------------------------
 
 def test_successful_login(page: Page, user: User):
+  """
+  Test case for a successful login.
 
+  This test case verifies that a user can successfully log in to the app by providing valid credentials.
+
+  Parameters:
+  - page (Page): The Playwright Page object representing the browser page.
+  - user (User): The User object representing the user credentials.
+
+  Returns:
+  None
+
+  This test case performs the following steps:
+  1. Navigates to the login page.
+  2. Fills in the username and password fields with the provided user credentials.
+  3. Clicks the "Login" button.
+  4. Asserts that the page title is "Reminders | Bulldoggy reminders app".
+  5. Asserts that the URL matches the expected pattern.
+  6. Asserts that the "bulldoggy-logo" element is visible.
+  7. Asserts that the "bulldoggy-title" element has the text "Bulldoggy".
+  8. Asserts that the "Logout" button is visible.
+  9. Asserts that the "reminders-message" element displays "Reminders for" followed by the user's username.
+
+  Note: This test case assumes the presence of the Playwright library and the necessary setup for running browser tests.
+  """
   # Given the login page is displayed
   page.goto('/login')
 
@@ -44,6 +68,208 @@ def test_successful_login(page: Page, user: User):
   # And the reminders page title card displays "Reminders for" the user's username
   expect(page.locator('id=reminders-message')).to_have_text(f'Reminders for {user.username}')
 
+def test_no_credentials(page: Page):
+  """
+  Test case for verifying that an error message is displayed when no login credentials are provided.
+
+  Parameters:
+  - page (Page): The Playwright Page object representing the browser page.
+
+  Returns:
+  None
+
+  This test case performs the following steps:
+  1. Navigates to the login page.
+  2. Clicks the "Login" button.
+  3. Asserts that the page title is "Login | Bulldoggy reminders app".
+  4. Asserts that the URL matches the expected pattern.
+  5. Asserts that the "bulldoggy-logo" element is visible.
+  6. Asserts that the "Login" button is visible.
+  """
+  # Given the login page is displayed
+  page.goto('/login')
+
+  # When the user provides no login credentials
+  page.get_by_text('Login').click()
+
+  # Then the error message is displayed
+  expect(page).to_have_title('Login | Bulldoggy reminders app')
+  expect(page).to_have_url(re.compile(re.escape('/') + 'login'))
+  expect(page.locator('id=bulldoggy-logo')).to_be_visible()
+  expect(page.get_by_role('button', name='Login')).to_be_visible()
+
+def test_no_username(page: Page, user: User):
+  """
+  Test case for verifying that an error message is displayed when no username is provided.
+
+  Parameters:
+  - page (Page): The Playwright Page object representing the browser page.
+  - user (User): The User object representing the user credentials.
+
+  Returns:
+  None
+
+  This test case performs the following steps:
+  1. Navigates to the login page.
+  2. Fills in the password field with the provided user credentials.
+  3. Clicks the "Login" button.
+  4. Asserts that the page title is "Login | Bulldoggy reminders app".
+  5. Asserts that the URL matches the expected pattern.
+  6. Asserts that the "bulldoggy-logo" element is visible.
+  7. Asserts that the "Login" button is visible.
+  """
+  # Given the login page is displayed
+  page.goto('/login')
+
+  # When the user provides no username
+  page.locator('[name="password"]').fill(user.password)
+  page.get_by_text('Login').click()
+
+  # Then the error message is displayed
+  expect(page).to_have_title('Login | Bulldoggy reminders app')
+  expect(page).to_have_url(re.compile(re.escape('/') + 'login'))
+  expect(page.locator('id=bulldoggy-logo')).to_be_visible()
+  expect(page.get_by_role('button', name='Login')).to_be_visible()
+
+def test_no_password(page: Page, user: User):
+  """
+  Test case for verifying that an error message is displayed when no password is provided.
+
+  Parameters:
+  - page (Page): The Playwright Page object representing the browser page.
+  - user (User): The User object representing the user credentials.
+
+  Returns:
+  None
+
+  This test case performs the following steps:
+  1. Navigates to the login page.
+  2. Fills in the username field with the provided user credentials.
+  3. Clicks the "Login" button.
+  4. Asserts that the page title is "Login | Bulldoggy reminders app".
+  5. Asserts that the URL matches the expected pattern.
+  6. Asserts that the "bulldoggy-logo" element is visible.
+  7. Asserts that the "Login" button is visible.
+  """
+  # Given the login page is displayed
+  page.goto('/login')
+
+  # When the user provides no password
+  page.locator('[name="username"]').fill(user.username)
+  page.get_by_text('Login').click()
+
+  # Then the error message is displayed
+  expect(page).to_have_title('Login | Bulldoggy reminders app')
+  expect(page).to_have_url(re.compile(re.escape('/') + 'login'))
+  expect(page.locator('id=bulldoggy-logo')).to_be_visible()
+  expect(page.get_by_role('button', name='Login')).to_be_visible()
+
+def test_incorrect_username(page: Page, user: User):
+  """
+  Test case for verifying that an error message is displayed when an incorrect username is provided.
+
+  Parameters:
+  - page (Page): The Playwright Page object representing the browser page.
+  - user (User): The User object representing the user credentials.
+
+  Returns:
+  None
+
+  This test case performs the following steps:
+  1. Navigates to the login page.
+  2. Fills in the username and password fields with incorrect credentials.
+  3. Clicks the "Login" button.
+  4. Asserts that the page title is "Login | Bulldoggy reminders app".
+  5. Asserts that the URL matches the expected pattern.
+  6. Asserts that the "bulldoggy-logo" element is visible.
+  7. Asserts that the "Login" button is visible.
+  """
+  # Given the login page is displayed
+  page.goto('/login')
+
+  # When the user provides incorrect username, but correct password
+  page.locator('[name="username"]').fill('invalid-username')
+  page.locator('[name="password"]').fill(user.password)
+  page.get_by_text('Login').click()
+
+  # Then the error message is displayed
+  expect(page).to_have_title('Login | Bulldoggy reminders app')
+  expect(page).to_have_url(re.compile(re.escape('/') + 'login'))
+  expect(page.locator('id=bulldoggy-logo')).to_be_visible()
+  expect(page.get_by_role('button', name='Login')).to_be_visible()
+  expect(page.locator('text=Invalid login! Please retry.')).to_be_visible()
+
+def test_incorrect_password(page: Page, user: User):
+  """
+  Test case for verifying that an error message is displayed when an incorrect password is provided.
+
+  Parameters:
+  - page (Page): The Playwright Page object representing the browser page.
+  - user (User): The User object representing the user credentials.
+
+  Returns:
+  None
+
+  This test case performs the following steps:
+  1. Navigates to the login page.
+  2. Fills in the username and password fields with incorrect credentials.
+  3. Clicks the "Login" button.
+  4. Asserts that the page title is "Login | Bulldoggy reminders app".
+  5. Asserts that the URL matches the expected pattern.
+  6. Asserts that the "bulldoggy-logo" element is visible.
+  7. Asserts that the "Login" button is visible.
+  """
+  # Given the login page is displayed
+  page.goto('/login')
+
+  # When the user provides correct username, but incorrect password
+  page.locator('[name="username"]').fill(user.username)
+  page.locator('[name="password"]').fill('invalid-password')
+  page.get_by_text('Login').click()
+
+  # Then the error message is displayed
+  expect(page).to_have_title('Login | Bulldoggy reminders app')
+  expect(page).to_have_url(re.compile(re.escape('/') + 'login'))
+  expect(page.locator('id=bulldoggy-logo')).to_be_visible()
+  expect(page.get_by_role('button', name='Login')).to_be_visible()
+  expect(page.locator('text=Invalid login! Please retry.')).to_be_visible()
+
+def test_successful_logout(page: Page, user: User):
+  """
+  Test case for verifying that the user can successfully log out.
+
+  Parameters:
+  - page (Page): The Playwright Page object representing the browser page.
+  - user (User): The User object representing the user credentials.
+
+  Returns:
+  None
+
+  This test case performs the following steps:
+  1. Navigates to the login page.
+  2. Fills in the username and password fields with the provided user credentials.
+  3. Clicks the "Login" button.
+  4. Clicks the "Logout" button.
+  5. Asserts that the page title is "Login | Bulldoggy reminders app".
+  6. Asserts that the URL matches the expected pattern.
+  7. Asserts that the "bulldoggy-logo" element is visible.
+  8. Asserts that the "Login" button is visible.
+  """
+  # Given the login page is displayed
+  page.goto('/login')
+  page.locator('[name="username"]').fill(user.username)
+  page.locator('[name="password"]').fill(user.password)
+  page.get_by_text('Login').click()
+
+  # When the user clicks the logout button
+  page.get_by_text('Logout').click()
+
+  # Then the login page is displayed
+  expect(page).to_have_title('Login | Bulldoggy reminders app')
+  expect(page).to_have_url(re.compile(re.escape('/') + 'login'))
+  expect(page.locator('id=bulldoggy-logo')).to_be_visible()
+  expect(page.get_by_role('button', name='Login')).to_be_visible()
+  expect(page.locator('text=Successfully logged out.')).to_be_visible()
 
 # --------------------------------------------------------------------------------
 # Navigation Behaviors
