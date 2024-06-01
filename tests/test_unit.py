@@ -1,9 +1,3 @@
-import sys
-import os
-
-# Append the project root directory to sys.path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 """
 This module contains unit tests for the Bulldoggy app.
 """
@@ -14,7 +8,11 @@ This module contains unit tests for the Bulldoggy app.
 
 from app.utils.auth import serialize_token, deserialize_token
 from testlib.inputs import User
+import sys
+import os
 
+# Append the project root directory to sys.path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # --------------------------------------------------------------------------------
 # Tests
