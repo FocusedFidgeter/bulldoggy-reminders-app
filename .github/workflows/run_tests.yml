@@ -7,6 +7,10 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+runs:
+  using: 'node20'
+  main: 'main.js'
+
 jobs:
   test:
     runs-on: ubuntu-latest
